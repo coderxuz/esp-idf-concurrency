@@ -5,10 +5,14 @@
 
 #include <button_handle/button_handle.h>
 #include <led_handle/led_handle.h>
+#include <wifi_handle/wifi_handle.h>
+#include <server_handle/server_handle.h>
 
 void app_main()
 {
+    wifi_init_sta();
     QueueHandle_t mode_queue = xQueueCreate(5, sizeof(int));
+    start_webserver(mode_queue);
     static button_config_t btn_config;
     btn_config.button_pin = 0;
     btn_config.mode_queue = mode_queue;
