@@ -4,6 +4,7 @@
 #include <driver/gpio.h>
 #include <esp_log.h>
 
+
 #include <button_handle/button_handle.h>
 
 void button_task(void *pv)
@@ -13,20 +14,15 @@ void button_task(void *pv)
     gpio_set_direction(config->button_pin, GPIO_MODE_INPUT);
     gpio_pullup_en(config->button_pin);
     int button_last_state = 1;
+    int local_mode = 0;
     while (1)
     {
         int button_level = gpio_get_level(config->button_pin);
         if (button_last_state == 1 && button_level == 0)
         {
-            if (*(config->mode) < 2)
-            {
-                (*(config->mode))++;
-            }
-            else
-            {
-                (*(config->mode)) = 0;
-            }
-            ESP_LOGW(config->TAG, "Pin mode is %d", *(config->mode));
+            local_mode = (local_mode + 1) % 3;
+            xQueueSend(config->mode_queue, &local_mode, 0);
+            ESP_LOGW(config->TAG, "Pin mode is %d", local_mode);
         }
         button_last_state = button_level;
         vTaskDelay(pdMS_TO_TICKS(20));

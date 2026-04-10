@@ -4,7 +4,7 @@
 typedef struct
 {
     int led_pin;
-    int *mode;
+    QueueHandle_t mode_queue;
     char *tag;
 } led_config_t;
 

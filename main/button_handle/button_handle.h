@@ -4,7 +4,7 @@
 typedef struct
 {
     int button_pin;
-    int *mode;
+    QueueHandle_t mode_queue;
     char *TAG;
 } button_config_t;
 
